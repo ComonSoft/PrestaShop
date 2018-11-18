@@ -987,12 +987,14 @@ class CartRuleCore extends ObjectModel
                     foreach ($package_products as $product) {
                         if (in_array($product['id_product'].'-'.$product['id_product_attribute'], $selected_products)
                             || in_array($product['id_product'].'-0', $selected_products)) {
-                            $price = $product['price'];
-                            if ($use_tax) {
-                                $infos = Product::getTaxesInformations($product, $context);
-                                $tax_rate = $infos['rate'] / 100;
-                                $price *= (1 + $tax_rate);
-                            }
+                            $price = Product::getPriceStatic($product['id_product'],
+                                $use_tax,
+                                isset($product['id_product_attribute']) ? (int)$product['id_product_attribute'] : null,
+                                6,
+                                null,
+                                false,
+                                false,
+                                $product['cart_quantity']);
 
                             $selected_products_reduction += $price * $product['cart_quantity'];
                         }
